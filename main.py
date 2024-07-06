@@ -81,40 +81,6 @@ class PolGenerator:
             self.all_users = []
             raise RuntimeError(e)
 
-        """
-        模板对应步骤，需要哪些资源
-        self.pages = {}
-        # USERS = [ XUSER, TUSER, LUSER, AUSER, RUSER]
-        for i in sepolicy.generate.USERS:
-            self.pages[i] = [self.SELECT_TYPE_PAGE, self.APP_PAGE, self.TRANSITION_PAGE, self.ROLE_PAGE,
-                             self.IN_NET_PAGE, self.OUT_NET_PAGE, self.BOOLEAN_PAGE, self.SELECT_DIR_PAGE]
-        self.pages[sepolicy.generate.RUSER] = [self.SELECT_TYPE_PAGE, self.APP_PAGE, self.ADMIN_PAGE,
-                                               self.USER_TRANSITION_PAGE, self.BOOLEAN_PAGE, self.SELECT_DIR_PAGE]
-        self.pages[sepolicy.generate.LUSER] = [self.SELECT_TYPE_PAGE, self.APP_PAGE, self.TRANSITION_PAGE,
-                                               self.IN_NET_PAGE, self.OUT_NET_PAGE, self.BOOLEAN_PAGE,
-                                               self.SELECT_DIR_PAGE]
-        self.pages[sepolicy.generate.SANDBOX] = [self.SELECT_TYPE_PAGE, self.APP_PAGE, self.IN_NET_PAGE,
-                                                 self.OUT_NET_PAGE, self.BOOLEAN_PAGE, self.SELECT_DIR_PAGE]
-        self.pages[sepolicy.generate.EUSER] = [self.SELECT_TYPE_PAGE, self.EXISTING_USER_PAGE, self.TRANSITION_PAGE,
-                                               self.ROLE_PAGE, self.IN_NET_PAGE, self.OUT_NET_PAGE, self.BOOLEAN_PAGE,
-                                               self.SELECT_DIR_PAGE]
-
-        # APPLICATIONS = [ DAEMON, DBUS, INETD, USER, CGI ]
-        for i in sepolicy.generate.APPLICATIONS:
-            self.pages[i] = [self.SELECT_TYPE_PAGE, self.APP_PAGE, self.IN_NET_PAGE, self.OUT_NET_PAGE,
-                             self.COMMON_APPS_PAGE, self.FILES_PAGE, self.BOOLEAN_PAGE, self.SELECT_DIR_PAGE]
-        self.pages[sepolicy.generate.USER] = [self.SELECT_TYPE_PAGE, self.APP_PAGE, self.USER_TRANSITION_PAGE,
-                                              self.IN_NET_PAGE, self.OUT_NET_PAGE, self.COMMON_APPS_PAGE,
-                                              self.FILES_PAGE, self.BOOLEAN_PAGE, self.SELECT_DIR_PAGE]
-
-        self.current_page = 0
-        self.back_button.set_sensitive(0)
-        """
-
-
-        """
-        网络接口信息,可扩展
-        """
         self.network_info = {}
 
         self.in_tcp_all = False
@@ -261,14 +227,6 @@ class PolGenerator:
                     my_policy.set_admin_roles(selected)
             """
 
-            """
-            网络内容
-            my_policy.set_in_tcp(self.in_tcp_all_checkbutton.get_active(), self.in_tcp_reserved_checkbutton.get_active(), self.in_tcp_unreserved_checkbutton.get_active(), self.in_tcp_entry.get_text())
-            my_policy.set_in_udp(self.in_udp_all_checkbutton.get_active(), self.in_udp_reserved_checkbutton.get_active(), self.in_udp_unreserved_checkbutton.get_active(), self.in_udp_entry.get_text())
-            my_policy.set_out_tcp(self.out_tcp_all_checkbutton.get_active(), self.out_tcp_entry.get_text())
-            my_policy.set_out_udp(self.out_udp_all_checkbutton.get_active(), self.out_udp_entry.get_text())
-            """
-
             my_policy.set_in_tcp(self.in_tcp_all, False, False, self.in_tcp_entry)
             my_policy.set_in_udp(self.in_udp_all, False, False, self.in_udp_entry)
             my_policy.set_out_tcp(self.out_tcp_all, self.out_tcp_entry)
@@ -279,16 +237,6 @@ class PolGenerator:
 
             for d in self.dir_store:
                 my_policy.add_dir(d)
-
-            """
-            iter = self.store.get_iter_first()
-            while iter:
-                if self.store.get_value(iter, 1) == FILE:
-                    my_policy.add_file(self.store.get_value(iter, 0))
-                else:
-                    my_policy.add_dir(self.store.get_value(iter, 0))
-                iter = self.store.iter_next(iter)
-            """
 
             self.info = my_policy.generate(outputdir)
             print(self.info)
@@ -375,8 +323,6 @@ class PolGenerator:
 
     def check_file_and_dir(self):
         for item in self.store:
-            self.file_store.append(item)
-            continue
             if os.path.exists(item):
                 if os.path.isfile(item):
                     self.file_store.append(item)
@@ -411,5 +357,13 @@ class PolGenerator:
             self.dir_store.append(d)
 
 if __name__ == "__main__":
-    generator = PolGenerator(r"/home/kevin/test_for_newtool/test1/info_a.txt")
+    filename = ""
+    if len(sys.argv) != 2:
+        print("使用方法：python3 testa.py <filename>")
+    else:
+        filename = sys.argv[1]  # 命令行中的第一个参数是文件名
+    if len(filename) == 0:
+        print("文件名不能为空,请重试")
+        exit(1)
+    generator = PolGenerator(filename)
     generator.pol_generate()
