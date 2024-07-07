@@ -11,7 +11,7 @@ python3 sepolgen_new filename
 
 # sepolicy改进使用方法
 
-强烈建议使用前，先将原sepolicy进行备份，以防破坏
+**强烈建议使用前，先将原sepolicy进行备份，以防破坏**
 
 进入对应文件夹
 ```
