@@ -17,7 +17,7 @@ python3 sepolgen_new filename
 ```
 cd /usr/lib/python3.6/site-packages/sepolicy
 ```
-将文件generate.py的内容更换为该项目下的generate_backup_customer.py
+将该项目下的generate_backup_customer.py添加至此文件夹中
 
 并在当前目录templates目录中新加文件customer.py
 
