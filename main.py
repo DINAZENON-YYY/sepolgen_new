@@ -4,24 +4,20 @@ import signal
 import string
 import os
 import sys
+
 try:
     import sepolicy
 except ValueError as e:
     sys.stderr.write("%s: %s\n" % (e.__class__.__name__, str(e)))
     sys.exit(1)
-"""
-import sepolicy.sepolicy.generate
-import sepolicy.sepolicy.interface
-"""
 
-import sepolicy.generate
+import sepolicy.generate_new
 import sepolicy.interface
 
 try:
     from subprocess import getstatusoutput
 except ImportError:
     from commands import getstatusoutput
-
 
 import re
 
@@ -30,6 +26,8 @@ import re
 然后对输出结果进行处理，将每行的第0个元素（即模块名称）添加到all_modules列表中。
 如果出现异常，则捕获异常并忽略。最后返回all_modules列表。
 """
+
+
 def get_all_modules():
     try:
         all_modules = []
@@ -43,6 +41,7 @@ def get_all_modules():
 
     return all_modules
 
+
 # 将两个路径添加到Python的系统路径
 sys.path.append('/usr/share/system-config-selinux')
 sys.path.append('.')
@@ -52,14 +51,18 @@ sys.path.append('.')
 其中，model为模型对象，path为节点路径，iter为当前节点的迭代器，selected为已选中数据的列表。
 函数通过调用model.get_value(iter, 0)方法，将当前节点的第0个值添加到selected列表中。
 """
+
+
 def foreach(model, path, iter, selected):
     selected.append(model.get_value(iter, 0))
+
 
 FILE = 1
 DIR = 2
 
+
 class PolGenerator:
-    def __init__(self, filename : string):
+    def __init__(self, filename: string):
 
         self.name = ""
         self.exec_path = ""
@@ -70,10 +73,10 @@ class PolGenerator:
         self.info = ""
 
         try:
-            self.all_types = sepolicy.generate.get_all_types()
+            self.all_types = sepolicy.generate_new.get_all_types()
             self.all_modules = get_all_modules()
-            self.all_roles = sepolicy.generate.get_all_roles()
-            self.all_users = sepolicy.generate.get_all_users()
+            self.all_roles = sepolicy.generate_new.get_all_roles()
+            self.all_users = sepolicy.generate_new.get_all_users()
         except RuntimeError as e:
             self.all_types = []
             self.all_modules = []
@@ -99,7 +102,6 @@ class PolGenerator:
         self.out_udp_entry = ""
         self.network_info["out_udp_info"] = [self.out_udp_all, self.out_udp_entry]
 
-
         self.role_store = []
         for i in self.all_roles:
             self.role_store.append(i[:2])
@@ -121,12 +123,10 @@ class PolGenerator:
         except ValueError as e:
             raise ValueError(e)
 
-
         self.init_file(filename)
 
-
     def confine_application(self):
-        return self.get_type() in sepolicy.generate.APPLICATIONS
+        return self.get_type() in sepolicy.generate_new.APPLICATIONS
 
     def pol_generate(self):
         self.generate_policy()
@@ -135,7 +135,7 @@ class PolGenerator:
         return self.name
 
     def get_type(self):
-        return sepolicy.generate.USER
+        return sepolicy.generate_new.USER
         """
         if self.sandbox_radiobutton.get_active():
             return sepolicy.generate.SANDBOX
@@ -175,7 +175,7 @@ class PolGenerator:
             """
             根据名字和类型，确定策略名字和对应模板（例如沙箱）
             """
-            my_policy = sepolicy.generate.policy(self.get_name(), self.get_type())
+            my_policy = sepolicy.generate_new.policy(self.get_name(), self.get_type())
 
             """
             bool值选项，暂不需要
@@ -184,7 +184,7 @@ class PolGenerator:
                 my_policy.add_boolean(self.boolean_store.get_value(iter, 0), self.boolean_store.get_value(iter, 1))
                 iter = self.boolean_store.iter_next(iter)
             """
-            if self.get_type() in sepolicy.generate.APPLICATIONS:
+            if self.get_type() in sepolicy.generate_new.APPLICATIONS:
                 my_policy.set_program(self.exec_path)
                 my_policy.gen_symbols()
                 """
@@ -198,11 +198,11 @@ class PolGenerator:
                 my_policy.set_use_audit(self.audit_checkbutton.get_active() == 1)
                 my_policy.set_use_terminal(self.terminal_checkbutton.get_active() == 1)
                 my_policy.set_use_mail(self.mail_checkbutton.get_active() == 1)
-                
+
                 if self.get_type() is sepolicy.generate.DAEMON:
                     my_policy.set_init_script(self.init_script_entry.get_text())
                 """
-                if self.get_type() == sepolicy.generate.USER:
+                if self.get_type() == sepolicy.generate_new.USER:
                     selected = ['user']
                     # self.user_transition_treeview.get_selection().selected_foreach(foreach, selected)
 
@@ -306,7 +306,6 @@ class PolGenerator:
         self.check_out_net()
         self.check_and_process_exec()
 
-
     def check_name(self):
         name = self.name
         """
@@ -332,20 +331,20 @@ class PolGenerator:
                 print("File or directory not found: " + item)
 
     def check_in_net(self):
-        sepolicy.generate.verify_ports(self.in_tcp_entry)
-        sepolicy.generate.verify_ports(self.in_udp_entry)
+        sepolicy.generate_new.verify_ports(self.in_tcp_entry)
+        sepolicy.generate_new.verify_ports(self.in_udp_entry)
         return True
 
     def check_out_net(self):
-        sepolicy.generate.verify_ports(self.out_tcp_entry)
-        sepolicy.generate.verify_ports(self.out_udp_entry)
+        sepolicy.generate_new.verify_ports(self.out_tcp_entry)
+        sepolicy.generate_new.verify_ports(self.out_udp_entry)
         return True
 
     def check_and_process_exec(self):
         if self.exec_path == "":
             print("You must enter a executable")
             return True
-        policy = sepolicy.generate.policy(self.name, self.get_type())
+        policy = sepolicy.generate_new.policy(self.name, self.get_type())
         policy.set_program(self.exec_path)
         policy.gen_writeable()
         policy.gen_symbols()
@@ -355,6 +354,7 @@ class PolGenerator:
 
         for d in policy.dirs.keys():
             self.dir_store.append(d)
+
 
 if __name__ == "__main__":
     filename = ""
