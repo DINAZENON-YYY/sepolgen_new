@@ -71,6 +71,7 @@ class PolGenerator:
         self.dir_store = []
         self.output_path = ""
         self.info = ""
+        self.userType = "user"
 
         try:
             self.all_types = sepolicy.generate_new.get_all_types()
@@ -136,32 +137,25 @@ class PolGenerator:
 
     def get_type(self):
         return sepolicy.generate_new.USER
-        """
-        if self.sandbox_radiobutton.get_active():
-            return sepolicy.generate.SANDBOX
-        if self.cgi_radiobutton.get_active():
-            return sepolicy.generate.CGI
-        if self.user_radiobutton.get_active():
-            return sepolicy.generate.USER
-        if self.init_radiobutton.get_active():
+        '''
+        if self.userType == "DAEMON":
             return sepolicy.generate.DAEMON
-        if self.dbus_radiobutton.get_active():
-            return sepolicy.generate.DBUS
-        if self.inetd_radiobutton.get_active():
-            return sepolicy.generate.INETD
-        if self.login_user_radiobutton.get_active():
-            return sepolicy.generate.LUSER
-        if self.admin_user_radiobutton.get_active():
-            return sepolicy.generate.AUSER
-        if self.xwindows_user_radiobutton.get_active():
+        if self.userType == "XUSER":
             return sepolicy.generate.XUSER
-        if self.terminal_user_radiobutton.get_active():
+        if self.userType == "TUSER":
             return sepolicy.generate.TUSER
-        if self.root_user_radiobutton.get_active():
+        if self.userType == "RUSER":
             return sepolicy.generate.RUSER
-        if self.existing_user_radiobutton.get_active():
+        if self.userType == "EUSER":
             return sepolicy.generate.EUSER
-        """
+        if self.userType == "LUSER":
+            return sepolicy.generate.LUSER
+        return sepolicy.generate.USER
+        '''
+
+
+
+
 
     def generate_policy(self, *args):
         """
@@ -198,34 +192,31 @@ class PolGenerator:
                 my_policy.set_use_audit(self.audit_checkbutton.get_active() == 1)
                 my_policy.set_use_terminal(self.terminal_checkbutton.get_active() == 1)
                 my_policy.set_use_mail(self.mail_checkbutton.get_active() == 1)
-
+                """
                 if self.get_type() is sepolicy.generate.DAEMON:
                     my_policy.set_init_script(self.init_script_entry.get_text())
-                """
-                if self.get_type() == sepolicy.generate_new.USER:
-                    selected = ['user']
-                    # self.user_transition_treeview.get_selection().selected_foreach(foreach, selected)
 
+                if self.get_type() == sepolicy.generate_new.USER:
+                    selected = [self.userType]
                     my_policy.set_transition_users(selected)
-            """
-            暂时不需要
             else:
                 if self.get_type() == sepolicy.generate.RUSER:
-                    selected = []
-                    self.admin_treeview.get_selection().selected_foreach(foreach, selected)
+                    selected = [self.userType]
+                    # self.admin_treeview.get_selection().selected_foreach(foreach, selected)
                     my_policy.set_admin_domains(selected)
-                    selected = []
-                    self.user_transition_treeview.get_selection().selected_foreach(foreach, selected)
+                    selected = [self.userType]
+                    # self.user_transition_treeview.get_selection().selected_foreach(foreach, selected)
                     my_policy.set_transition_users(selected)
                 else:
-                    selected = []
-                    self.transition_treeview.get_selection().selected_foreach(foreach, selected)
+                    selected = [self.userType]
+                    # self.transition_treeview.get_selection().selected_foreach(foreach, selected)
                     my_policy.set_transition_domains(selected)
 
-                    selected = []
-                    self.role_treeview.get_selection().selected_foreach(foreach, selected)
+                    selected = [self.userType]
+                    # self.role_treeview.get_selection().selected_foreach(foreach, selected)
                     my_policy.set_admin_roles(selected)
-            """
+
+
 
             my_policy.set_in_tcp(self.in_tcp_all, False, False, self.in_tcp_entry)
             my_policy.set_in_udp(self.in_udp_all, False, False, self.in_udp_entry)
@@ -255,6 +246,8 @@ class PolGenerator:
                     value = value.strip()
                     if key == 'name':
                         self.name = value
+                    elif key == 'usertype': # guest,staff,sysadm,unconfined,user,xguest
+                        self.userType = value
                     elif key == 'execpath':
                         self.exec_path = value
                     elif key == 'outputpath':
@@ -291,7 +284,7 @@ class PolGenerator:
                             self.out_udp_all = False
                         else:
                             self.out_udp_all = True
-                    else:
+                    elif key == 'file':
                         current_key = key
                         files = value.split(",")
                         for file in files:
@@ -300,6 +293,7 @@ class PolGenerator:
                     files = value.split(",")
                     for file in files:
                         self.store.append(file)
+
         self.check_name()
         self.check_file_and_dir()
         self.check_in_net()
