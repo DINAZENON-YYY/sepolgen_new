@@ -1,4 +1,5 @@
 name:test_a
+usertype:guest
 execpath:/home/kevin/test_for_newtool/test1/test_a
 file:/home/kevin/test_for_newtool/test1/book.txt,/home/kevin/test_for_newtool/test1/note.txt
 in_tcp_port:2495
