@@ -444,9 +444,10 @@ class policy:
         self.use_pam = False
         self.use_dbus = False
         self.use_audit = False
-        self.use_etc = self.type not in [EUSER, NEWTYPE]
-        self.use_localization = self.type not in [EUSER, NEWTYPE]
-        self.use_fd = self.type not in [EUSER, NEWTYPE]
+        """TODO"""
+        self.use_etc = self.type not in [USER, EUSER, NEWTYPE]
+        self.use_localization = self.type not in [USER, EUSER, NEWTYPE]
+        self.use_fd = self.type not in [USER, EUSER, NEWTYPE]
         self.use_terminal = False
         self.use_mail = False
         self.booleans = {}
