@@ -2,7 +2,7 @@
 对传统模板工具进行简单重构
 
 # 命令行工具使用方法
-将此文件main.py安装至/usr/bin文件夹中，运行以下命令即可：
+将此文件main.py安装至任意位置中（/usr/bin文件夹最佳），运行以下命令即可：
 ```
 python3 sepolgen_new filename
 ```
@@ -19,7 +19,7 @@ cd /usr/lib/python3.6/site-packages/sepolicy
 ```
 将该项目下的generate_backup_customer.py添加至此文件夹中，并重名名为generate_new.py
 
-然后在当前目录templates目录中新加文件customer.py
+然后将改项目下templates_new同样添加至此文件夹中，无需重新命名
 
 # 注意
 按照info格式进行资源配置，目前仍未做鲁棒性测试和更改
