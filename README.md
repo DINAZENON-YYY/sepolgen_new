@@ -1,10 +1,10 @@
 # sepolgen_new
-对传统模板工具进行简单重构
+对传统模板工具进行重构
 
 # 命令行工具使用方法
-将此文件main.py安装至任意位置中（/usr/bin文件夹最佳），运行以下命令即可：
+将此文件main.py安装至任意位置中（/usr/bin文件夹最佳），更名为sepolgen-yyy运行以下命令即可：
 ```
-python3 sepolgen_new filename
+python3 sepolgen_new.py info
 ```
 实际上只是一个py文件，如何命名都可以
 通过命令行读取info文件
