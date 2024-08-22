@@ -23,20 +23,17 @@
 
 ########################### Type Enforcement File #############################
 te_types="""
-attribute device_node;
-
-type device_t;
 type usb_device_t;
-dev_node(usb_device_t)
 """
 
 te_rules="""
-allow device_node device_t:filesystem associate;
-
-fs_associate(device_node)
-fs_associate_tmpfs(device_node)
-
-files_associate_tmp(device_node)
+allow TEMPLATETYPE_t self:netlink_kobject_uevent_socket { bind create getattr read setopt };
+dev_list_sysfs(TEMPLATETYPE_t)
+dev_read_sysfs(TEMPLATETYPE_t)
+dev_rw_generic_usb_dev(TEMPLATETYPE_t)
+term_use_ptmx(TEMPLATETYPE_t)
+udev_read_db(TEMPLATETYPE_t)
+udev_search_pids(TEMPLATETYPE_t)
 """
 
 ########################### Interface File #############################
@@ -51,12 +48,12 @@ if_rules="""\
 ##	</summary>
 ## </param>
 #
-interface(`dev_getattr_generic_usb_dev',`
+interface(`TEMPLATETYPE_getattr_generic_usb_dev',`
 	gen_require(`
-		type usb_device_t, device_t;
+		type usb_device_t, TEMPLATETYPE_t;
 	')
 
-	getattr_chr_files_pattern($1, device_t, usb_device_t)
+	getattr_chr_files_pattern($1, TEMPLATETYPE_t, usb_device_t)
 ')
 
 ########################################
@@ -69,12 +66,12 @@ interface(`dev_getattr_generic_usb_dev',`
 ##	</summary>
 ## </param>
 #
-interface(`dev_setattr_generic_usb_dev',`
+interface(`TEMPLATETYPE_setattr_generic_usb_dev',`
 	gen_require(`
-		type usb_device_t, device_t;
+		type usb_device_t, TEMPLATETYPE_t;
 	')
 
-	setattr_chr_files_pattern($1, device_t, usb_device_t)
+	setattr_chr_files_pattern($1, TEMPLATETYPE_t, usb_device_t)
 ')
 
 ########################################
@@ -87,12 +84,12 @@ interface(`dev_setattr_generic_usb_dev',`
 ##	</summary>
 ## </param>
 #
-interface(`dev_read_generic_usb_dev',`
+interface(`TEMPLATETYPE_read_generic_usb_dev',`
 	gen_require(`
-		type usb_device_t, device_t;
+		type usb_device_t, TEMPLATETYPE_t;
 	')
 
-	read_chr_files_pattern($1, device_t, usb_device_t)
+	read_chr_files_pattern($1, TEMPLATETYPE_t, usb_device_t)
 ')
 
 ########################################
@@ -105,12 +102,12 @@ interface(`dev_read_generic_usb_dev',`
 ##	</summary>
 ## </param>
 #
-interface(`dev_rw_generic_usb_dev',`
+interface(`TEMPLATETYPE_rw_generic_usb_dev',`
 	gen_require(`
-		type device_t, usb_device_t;
+		type TEMPLATETYPE_t, usb_device_t;
 	')
 
-	rw_chr_files_pattern($1, device_t, usb_device_t)
+	rw_chr_files_pattern($1, TEMPLATETYPE_t, usb_device_t)
 ')
 
 ########################################
@@ -123,12 +120,12 @@ interface(`dev_rw_generic_usb_dev',`
 ##	</summary>
 ## </param>
 #
-interface(`dev_delete_generic_usb_dev',`
+interface(`TEMPLATETYPE_delete_generic_usb_dev',`
 	gen_require(`
-		type device_t, usb_device_t;
+		type TEMPLATETYPE_t, usb_device_t;
 	')
 
-	delete_chr_files_pattern($1, device_t, usb_device_t)
+	delete_chr_files_pattern($1, TEMPLATETYPE_t, usb_device_t)
 ')
 
 ########################################
@@ -141,13 +138,16 @@ interface(`dev_delete_generic_usb_dev',`
 ##	</summary>
 ## </param>
 #
-interface(`dev_relabel_generic_usb_dev',`
+interface(`TEMPLATETYPE_relabel_generic_usb_dev',`
 	gen_require(`
-		type usb_device_t, device_t;
+		type usb_device_t, TEMPLATETYPE_t;
 	')
 
-	relabel_chr_files_pattern($1, device_t, usb_device_t)
+	relabel_chr_files_pattern($1, TEMPLATETYPE_t, usb_device_t)
 ')
+
+
+
 """
 
 if_admin_types="""

@@ -20,6 +20,7 @@
 #
 #
 import os
+import pwd
 import sys
 import stat
 import re
@@ -30,46 +31,41 @@ import time
 import platform
 import subprocess
 
-# from .templates import executable
-"""
-from templates import executable
-from templates import boolean
-from templates import etc_rw
-from templates import unit_file
-from templates import var_cache
-from templates import var_spool
-from templates import var_lib
-from templates import var_log
-from templates import var_run
-from templates import tmp
-from templates import rw
-from templates import network
-from templates import script
-from templates import spec
-from templates import user
-from templates import customer
-"""
 
-from .templates import executable
-from .templates import boolean
-from .templates import etc_rw
-from .templates import unit_file
-from .templates import var_cache
-from .templates import var_spool
-from .templates import var_lib
-from .templates import var_log
-from .templates import var_run
-from .templates import tmp
-from .templates import rw
-from .templates import network
-from .templates import script
-from .templates import spec
-from .templates import user
-from .templates import customer
-from .templates import dev_sound
-from .templates import dev_event
-from .templates import dev_printer
-from .templates import dev_random
+from .templates_new import executable
+from .templates_new import boolean
+from .templates_new import etc_rw
+from .templates_new import unit_file
+from .templates_new import var_cache
+from .templates_new import var_spool
+from .templates_new import var_lib
+from .templates_new import var_log
+from .templates_new import var_run
+from .templates_new import tmp
+from .templates_new import rw
+from .templates_new import network
+from .templates_new import script
+from .templates_new import spec
+from .templates_new import user
+
+from .templates_new import customer
+from .templates_new import dev_sound
+from .templates_new import dev_event
+from .templates_new import dev_printer
+from .templates_new import dev_random
+from .templates_new import dev_usb
+from .templates_new import dev_memory
+from .templates_new import dev_clock
+from .templates_new import dev_null
+
+from .templates_new import etc_rw_root
+from .templates_new import unit_file_root
+from .templates_new import var_cache_root
+from .templates_new import var_spool_root
+from .templates_new import var_lib_root
+from .templates_new import var_log_root
+from .templates_new import var_run_root
+from .templates_new import tmp_root
 
 
 import sepolgen.interfaces as interfaces
@@ -369,25 +365,47 @@ class policy:
         self.symbols["setfcap"] = "add_capability('setfcap')"
 
         self.DEFAULT_DIRS = {}
-        self.DEFAULT_DIRS["/etc"] = ["etc_rw", [], etc_rw]
-        self.DEFAULT_DIRS["/tmp"] = ["tmp", [], tmp]
+        self.DEFAULT_DIRS["/etc"] = ["etc_rw", [], etc_rw_root]
+        self.DEFAULT_DIRS["/tmp"] = ["tmp", [], tmp_root]
         self.DEFAULT_DIRS["rw"] = ["rw", [], rw]
-        self.DEFAULT_DIRS["/usr/lib/systemd/system"] = ["unit_file", [], unit_file]
-        self.DEFAULT_DIRS["/lib/systemd/system"] = ["unit_file", [], unit_file]
-        self.DEFAULT_DIRS["/etc/systemd/system"] = ["unit_file", [], unit_file]
-        self.DEFAULT_DIRS["/var/cache"] = ["var_cache", [], var_cache]
-        self.DEFAULT_DIRS["/var/lib"] = ["var_lib", [], var_lib]
-        self.DEFAULT_DIRS["/var/log"] = ["var_log", [], var_log]
-        self.DEFAULT_DIRS["/var/run"] = ["var_run", [], var_run]
-        self.DEFAULT_DIRS["/var/spool"] = ["var_spool", [], var_spool]
+        self.DEFAULT_DIRS["/usr/lib/systemd/system"] = ["unit_file", [], unit_file_root]
+        self.DEFAULT_DIRS["/lib/systemd/system"] = ["unit_file", [], unit_file_root]
+        self.DEFAULT_DIRS["/etc/systemd/system"] = ["unit_file", [], unit_file_root]
+        self.DEFAULT_DIRS["/var/cache"] = ["var_cache", [], var_cache_root]
+        self.DEFAULT_DIRS["/var/lib"] = ["var_lib", [], var_lib_root]
+        self.DEFAULT_DIRS["/var/log"] = ["var_log", [], var_log_root]
+        self.DEFAULT_DIRS["/var/run"] = ["var_run", [], var_run_root]
+        self.DEFAULT_DIRS["/var/spool"] = ["var_spool", [], var_spool_root]
 
         self.DEFAULT_DIRS["/dev/snd"] = ["dev_snd", [], dev_sound]
         self.DEFAULT_DIRS["/dev/input/event"] = ["dev_event", [], dev_event]
         self.DEFAULT_DIRS["/dev/lp"] = ["dev_printer", [], dev_printer]
         self.DEFAULT_DIRS["/dev/random"] = ["dev_random", [], dev_random]
 
+        self.DEFAULT_DIRS["/dev/null"] = ["dev_null", [], dev_null]
+        self.DEFAULT_DIRS["/dev/mem"] = ["dev_memory", [], dev_memory]
+        self.DEFAULT_DIRS["/dev/kmem"] = ["dev_kmemory", [], dev_memory]
+        self.DEFAULT_DIRS["/dev/usb"] = ["dev_usb", [], dev_usb]
+        self.DEFAULT_DIRS["/dev/gtrsc"] = ["dev_gtrclock", [], dev_clock]
+        self.DEFAULT_DIRS["/dev/hpet"] = ["dev_hpeclock", [], dev_clock]
+        self.DEFAULT_DIRS["/dev/ptp"] = ["dev_ptpclock", [], dev_clock]
+
+        self.CUSTOMER_BAN_DIRS = ["user_home_t"]
+
         self.CUSTOMER_DIRS = {}
-        self.CUSTOMER_KEYS = []
+
+        self.CUSTOMER_DIRS["/etc"] = ["etc_rw", [], etc_rw]
+        self.CUSTOMER_DIRS["/tmp"] = ["tmp", [], tmp]
+        self.CUSTOMER_DIRS["/usr/lib/systemd/system"] = ["unit_file", [], unit_file]
+        self.CUSTOMER_DIRS["/lib/systemd/system"] = ["unit_file", [], unit_file]
+        self.CUSTOMER_DIRS["/etc/systemd/system"] = ["unit_file", [], unit_file]
+        self.CUSTOMER_DIRS["/var/cache"] = ["var_cache", [], var_cache]
+        self.CUSTOMER_DIRS["/var/lib"] = ["var_lib", [], var_lib]
+        self.CUSTOMER_DIRS["/var/log"] = ["var_log", [], var_log]
+        self.CUSTOMER_DIRS["/var/run"] = ["var_run", [], var_run]
+        self.CUSTOMER_DIRS["/var/spool"] = ["var_spool", [], var_spool]
+
+        self.CUSTOMER_KEYS = ["/etc", "/var/cache", "/var/log", "/tmp", "/var/lib", "/var/run", "/var/spool", "/etc/systemd/system", "/usr/lib/systemd/system", "/lib/systemd/system"]
 
         self.DEFAULT_EXT = {}
         self.DEFAULT_EXT["_tmp_t"] = tmp
@@ -400,7 +418,7 @@ class policy:
         self.DEFAULT_EXT["_port_t"] = network
 
         self.DEFAULT_KEYS = ["/etc", "/var/cache", "/var/log", "/tmp", "rw", "/var/lib", "/var/run", "/var/spool", "/etc/systemd/system", "/usr/lib/systemd/system", "/lib/systemd/system",
-                             "/dev/snd", "/dev/input/event", "/dev/lp", "/dev/random"]
+                             "/dev/snd", "/dev/input/event", "/dev/lp", "/dev/random", "dev_null", "dev_memory", "dev_kmemory", "dev_usb", "dev_gtrclock", "dev_hpeclock", "dev_ptpclock"]
 
         self.DEFAULT_TYPES = (
             (self.generate_daemon_types, self.generate_daemon_rules),
@@ -444,10 +462,9 @@ class policy:
         self.use_pam = False
         self.use_dbus = False
         self.use_audit = False
-        """TODO"""
-        self.use_etc = self.type not in [USER, EUSER, NEWTYPE]
-        self.use_localization = self.type not in [USER, EUSER, NEWTYPE]
-        self.use_fd = self.type not in [USER, EUSER, NEWTYPE]
+        self.use_etc = self.type not in [EUSER, NEWTYPE]
+        self.use_localization = self.type not in [EUSER, NEWTYPE]
+        self.use_fd = self.type not in [EUSER, NEWTYPE]
         self.use_terminal = False
         self.use_mail = False
         self.booleans = {}
@@ -716,13 +733,32 @@ allow %s_t %s_t:%s_socket name_%s;
             return re.sub("TEMPLATETYPE", self.name, network.te_types)
         return ""
 
+    def get_file_owner(self, file_path):
+        file_stat = os.stat(file_path)
+
+        user_id = file_stat.st_uid
+
+        try:
+            user_name = pwd.getpwuid(user_id).pw_name
+        except KeyError:
+            user_name = "Unknown"
+
+        return user_name, user_id
+
     def __find_path(self, file):
         for d in self.DEFAULT_DIRS:
             if file.find(d) == 0:
-                self.DEFAULT_DIRS[d][1].append(file)
-                return self.DEFAULT_DIRS[d]
+                owner_name, owner_id = self.get_file_owner(file)
+                if(d not in self.CUSTOMER_DIRS or (owner_name == 'root' or owner_id == 0)):
+                    self.DEFAULT_DIRS[d][1].append(file)
+                    print(self.DEFAULT_DIRS[d])
+                    return self.DEFAULT_DIRS[d]
+                else:
+                    self.CUSTOMER_DIRS[d][1].append(file)
+                    print(self.CUSTOMER_DIRS[d])
+                    return self.CUSTOMER_DIRS[d]
         default_type = get_type_value_from_ls(file)
-        if default_type != 'unconfined':
+        if default_type != 'unconfined' and default_type not in self.CUSTOMER_BAN_DIRS:
             self.CUSTOMER_DIRS[file] = [default_type, [], customer]
             self.CUSTOMER_DIRS[file][1].append(file)
             if default_type not in self.CUSTOMER_KEYS:
@@ -825,7 +861,6 @@ allow %s_t %s_t:%s_socket name_%s;
 
     def generate_transition_rules(self):
         newte = ""
-        # print(self.transition_domains)
         for app in self.transition_domains:
             tmp = re.sub("TEMPLATETYPE", self.name, user.te_transition_rules)
             newte += re.sub("APPLICATION", app, tmp)
@@ -1102,8 +1137,6 @@ allow %s_t %s_t:%s_socket name_%s;
         newif += self.generate_new_type_if()
         newif += self.generate_new_rules()
 
-        # print("if is")
-        # print(newif)
 
         return newif
     def generate_default_types(self):
@@ -1214,9 +1247,6 @@ allow %s_t %s_t:%s_socket name_%s;
         newte += self.generate_kerberos_rules()
         newte += self.generate_manage_krb5_rcache_rules()
 
-        # print("newte is")
-        # print(newte)
-
         return newte
 
     def generate_fc(self):
@@ -1253,8 +1283,6 @@ allow %s_t %s_t:%s_socket name_%s;
         fclist.sort()
         newfc = "\n".join(fclist)
 
-        # print("fc is")
-        # print(newfc)
         return newfc
 
     def generate_user_sh(self):
@@ -1763,7 +1791,6 @@ class PolGenerator:
                 my_policy.add_dir(d)
 
             self.info = my_policy.generate(outputdir)
-            # print(self.info)
             return False
         except ValueError as e:
             raise e
