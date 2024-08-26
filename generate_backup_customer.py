@@ -386,8 +386,8 @@ class policy:
         self.DEFAULT_DIRS["/dev/mem"] = ["dev_memory", [], dev_memory]
         self.DEFAULT_DIRS["/dev/kmem"] = ["dev_kmemory", [], dev_memory]
         self.DEFAULT_DIRS["/dev/usb"] = ["dev_usb", [], dev_usb]
-        self.DEFAULT_DIRS["/dev/gtrsc"] = ["dev_gtrclock", [], dev_clock]
-        self.DEFAULT_DIRS["/dev/hpet"] = ["dev_hpeclock", [], dev_clock]
+        self.DEFAULT_DIRS["/dev/gtrsc"] = ["dev_gtrsclock", [], dev_clock]
+        self.DEFAULT_DIRS["/dev/hpet"] = ["dev_hpetclock", [], dev_clock]
         self.DEFAULT_DIRS["/dev/ptp"] = ["dev_ptpclock", [], dev_clock]
 
         self.CUSTOMER_BAN_DIRS = ["user_home_t"]
@@ -418,7 +418,7 @@ class policy:
         self.DEFAULT_EXT["_port_t"] = network
 
         self.DEFAULT_KEYS = ["/etc", "/var/cache", "/var/log", "/tmp", "rw", "/var/lib", "/var/run", "/var/spool", "/etc/systemd/system", "/usr/lib/systemd/system", "/lib/systemd/system",
-                             "/dev/snd", "/dev/input/event", "/dev/lp", "/dev/random", "dev_null", "dev_memory", "dev_kmemory", "dev_usb", "dev_gtrclock", "dev_hpeclock", "dev_ptpclock"]
+                             "/dev/snd", "/dev/input/event", "/dev/lp", "/dev/random", "dev/null", "dev/mem", "dev/kmem", "dev/usb", "dev/gtrsc", "dev/hpet", "dev/ptp"]
 
         self.DEFAULT_TYPES = (
             (self.generate_daemon_types, self.generate_daemon_rules),
