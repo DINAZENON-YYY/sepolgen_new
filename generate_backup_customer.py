@@ -418,7 +418,7 @@ class policy:
         self.DEFAULT_EXT["_port_t"] = network
 
         self.DEFAULT_KEYS = ["/etc", "/var/cache", "/var/log", "/tmp", "rw", "/var/lib", "/var/run", "/var/spool", "/etc/systemd/system", "/usr/lib/systemd/system", "/lib/systemd/system",
-                             "/dev/snd", "/dev/input/event", "/dev/lp", "/dev/random", "dev/null", "dev/mem", "dev/kmem", "dev/usb", "dev/gtrsc", "dev/hpet", "dev/ptp"]
+                             "/dev/snd", "/dev/input/event", "/dev/lp", "/dev/random", "/dev/null", "/dev/mem", "/dev/kmem", "/dev/usb", "/dev/gtrsc", "/dev/hpet", "/dev/ptp"]
 
         self.DEFAULT_TYPES = (
             (self.generate_daemon_types, self.generate_daemon_rules),
