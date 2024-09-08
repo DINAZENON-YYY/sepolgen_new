@@ -1,6 +1,6 @@
 # sepolgen_hw
 对传统模板工具进行重构
-仅需要config.yaml,info.txt.sepolgen_hw.py,generate_new.py和templates_new文件夹
+仅需要config.yaml, info.txt， sepolgen_hw.py, generate_new.py和templates_new文件夹
 
 # 环境准备
 ```
