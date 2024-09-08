@@ -23,8 +23,8 @@
 
 ########################### Type Enforcement File #############################
 te_types="""
-type systemd_unit_file_t;
-systemd_unit_file(systemd_unit_file_t)
+type CUSTOMTYPE;
+systemd_unit_file(CUSTOMTYPE)
 """
 
 te_rules=""
@@ -44,13 +44,13 @@ if_rules="""\
 interface(`TEMPLATETYPE_systemctl',`
 	gen_require(`
 		type TEMPLATETYPE_t;
-		type systemd_unit_file_t;
+		type CUSTOMTYPE;
 	')
 
 	systemd_exec_systemctl($1)
         systemd_read_fifo_file_passwd_run($1)
-	allow $1 systemd_unit_file_t:file read_file_perms;
-	allow $1 systemd_unit_file_t:service manage_service_perms;
+	allow $1 CUSTOMTYPE:file read_file_perms;
+	allow $1 CUSTOMTYPE:service manage_service_perms;
 
 	ps_process_pattern($1, TEMPLATETYPE_t)
 ')
@@ -58,17 +58,17 @@ interface(`TEMPLATETYPE_systemctl',`
 """
 
 if_admin_types="""
-	type systemd_unit_file_t;"""
+	type CUSTOMTYPE;"""
 
 if_admin_rules="""
 	TEMPLATETYPE_systemctl($1)
-	admin_pattern($1, systemd_unit_file_t)
-	allow $1 systemd_unit_file_t:service all_service_perms;
+	admin_pattern($1, CUSTOMTYPE)
+	allow $1 CUSTOMTYPE:service all_service_perms;
 """
 
 ########################### File Context ##################################
 fc_file="""\
-FILENAME		--	gen_context(system_u:object_r:systemd_unit_file_t,s0)
+FILENAME		--	gen_context(system_u:object_r:CUSTOMTYPE,s0)
 """
 
 fc_dir=""

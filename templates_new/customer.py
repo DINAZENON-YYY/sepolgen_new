@@ -1,14 +1,14 @@
 
 ########################### tmp Template File #############################
 te_types="""
-type SEMPLATETYPE;
-files_type(SEMPLATETYPE)
+type CUSTOMTYPE;
+files_type(CUSTOMTYPE)
 """
 
 te_rules="""
-manage_dirs_pattern(TEMPLATETYPE_t, SEMPLATETYPE, SEMPLATETYPE)
-manage_files_pattern(TEMPLATETYPE_t, SEMPLATETYPE, SEMPLATETYPE)
-manage_lnk_files_pattern(TEMPLATETYPE_t, SEMPLATETYPE, SEMPLATETYPE)
+manage_dirs_pattern(TEMPLATETYPE_t, CUSTOMTYPE, CUSTOMTYPE)
+manage_files_pattern(TEMPLATETYPE_t, CUSTOMTYPE, CUSTOMTYPE)
+manage_lnk_files_pattern(TEMPLATETYPE_t, CUSTOMTYPE, CUSTOMTYPE)
 """
 
 ########################### Interface File #############################
@@ -25,10 +25,10 @@ if_rules="""
 #
 interface(`TEMPLATETYPE_search_rw_dir',`
 	gen_require(`
-		type SEMPLATETYPE;
+		type CUSTOMTYPE;
 	')
 
-	allow $1 SEMPLATETYPE:dir search_dir_perms;
+	allow $1 CUSTOMTYPE:dir search_dir_perms;
 	files_search_rw($1)
 ')
 
@@ -44,11 +44,11 @@ interface(`TEMPLATETYPE_search_rw_dir',`
 #
 interface(`TEMPLATETYPE_read_rw_files',`
 	gen_require(`
-		type SEMPLATETYPE;
+		type CUSTOMTYPE;
 	')
 
-	read_files_pattern($1, SEMPLATETYPE, SEMPLATETYPE)
-	allow $1 SEMPLATETYPE:dir list_dir_perms;
+	read_files_pattern($1, CUSTOMTYPE, CUSTOMTYPE)
+	allow $1 CUSTOMTYPE:dir list_dir_perms;
 	files_search_rw($1)
 ')
 
@@ -64,10 +64,10 @@ interface(`TEMPLATETYPE_read_rw_files',`
 #
 interface(`TEMPLATETYPE_manage_rw_files',`
 	gen_require(`
-		type SEMPLATETYPE;
+		type CUSTOMTYPE;
 	')
 
-	manage_files_pattern($1, SEMPLATETYPE, SEMPLATETYPE)
+	manage_files_pattern($1, CUSTOMTYPE, CUSTOMTYPE)
 ')
 
 ########################################
@@ -83,16 +83,16 @@ interface(`TEMPLATETYPE_manage_rw_files',`
 #
 interface(`TEMPLATETYPE_manage_rw_dirs',`
 	gen_require(`
-		type SEMPLATETYPE;
+		type CUSTOMTYPE;
 	')
 
-	manage_dirs_pattern($1, SEMPLATETYPE, SEMPLATETYPE)
+	manage_dirs_pattern($1, CUSTOMTYPE, CUSTOMTYPE)
 ')
 
 """
 
 te_stream_rules="""
-manage_sock_files_pattern(TEMPLATETYPE_t, SEMPLATETYPE, SEMPLATETYPE)
+manage_sock_files_pattern(TEMPLATETYPE_t, CUSTOMTYPE, CUSTOMTYPE)
 """
 
 if_stream_rules="""\
@@ -108,19 +108,19 @@ if_stream_rules="""\
 #
 interface(`TEMPLATETYPE_stream_connect',`
 	gen_require(`
-		type TEMPLATETYPE_t, SEMPLATETYPE;
+		type TEMPLATETYPE_t, CUSTOMTYPE;
 	')
 
-	stream_connect_pattern($1, SEMPLATETYPE, SEMPLATETYPE, SEMPLATETYPE)
+	stream_connect_pattern($1, CUSTOMTYPE, CUSTOMTYPE, CUSTOMTYPE)
 ')
 """
 
 if_admin_types="""
-		type SEMPLATETYPE;"""
+		type CUSTOMTYPE;"""
 
 if_admin_rules="""
 	files_search_etc($1)
-	admin_pattern($1, SEMPLATETYPE)
+	admin_pattern($1, CUSTOMTYPE)
 """
 
 ########################### File Context ##################################

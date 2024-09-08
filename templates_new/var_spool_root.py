@@ -23,19 +23,19 @@
 
 ########################### Type Enforcement File #############################
 te_types="""
-type var_spool_t;
-files_type(var_spool_t)
+type CUSTOMTYPE;
+files_type(CUSTOMTYPE)
 """
 te_rules="""
-manage_dirs_pattern(TEMPLATETYPE_t, var_spool_t, var_spool_t)
-manage_files_pattern(TEMPLATETYPE_t, var_spool_t, var_spool_t)
-manage_lnk_files_pattern(TEMPLATETYPE_t, var_spool_t, var_spool_t)
-files_spool_filetrans(TEMPLATETYPE_t, var_spool_t, { dir file lnk_file })
+manage_dirs_pattern(TEMPLATETYPE_t, CUSTOMTYPE, CUSTOMTYPE)
+manage_files_pattern(TEMPLATETYPE_t, CUSTOMTYPE, CUSTOMTYPE)
+manage_lnk_files_pattern(TEMPLATETYPE_t, CUSTOMTYPE, CUSTOMTYPE)
+files_spool_filetrans(TEMPLATETYPE_t, CUSTOMTYPE, { dir file lnk_file })
 """
 
 te_stream_rules="""\
-manage_sock_files_pattern(TEMPLATETYPE_t, var_spool_t, var_spool_t)
-files_spool_filetrans(TEMPLATETYPE_t, var_spool_t, sock_file)
+manage_sock_files_pattern(TEMPLATETYPE_t, CUSTOMTYPE, CUSTOMTYPE)
+files_spool_filetrans(TEMPLATETYPE_t, CUSTOMTYPE, sock_file)
 """
 
 ########################### Interface File #############################
@@ -52,10 +52,10 @@ if_rules="""
 #
 interface(`TEMPLATETYPE_search_spool',`
 	gen_require(`
-		type var_spool_t;
+		type CUSTOMTYPE;
 	')
 
-	allow $1 var_spool_t:dir search_dir_perms;
+	allow $1 CUSTOMTYPE:dir search_dir_perms;
 	files_search_spool($1)
 ')
 
@@ -71,11 +71,11 @@ interface(`TEMPLATETYPE_search_spool',`
 #
 interface(`TEMPLATETYPE_read_spool_files',`
 	gen_require(`
-		type var_spool_t;
+		type CUSTOMTYPE;
 	')
 
 	files_search_spool($1)
-	read_files_pattern($1, var_spool_t, var_spool_t)
+	read_files_pattern($1, CUSTOMTYPE, CUSTOMTYPE)
 ')
 
 ########################################
@@ -90,11 +90,11 @@ interface(`TEMPLATETYPE_read_spool_files',`
 #
 interface(`TEMPLATETYPE_manage_spool_files',`
 	gen_require(`
-		type var_spool_t;
+		type CUSTOMTYPE;
 	')
 
 	files_search_spool($1)
-	manage_files_pattern($1, var_spool_t, var_spool_t)
+	manage_files_pattern($1, CUSTOMTYPE, CUSTOMTYPE)
 ')
 
 ########################################
@@ -109,11 +109,11 @@ interface(`TEMPLATETYPE_manage_spool_files',`
 #
 interface(`TEMPLATETYPE_manage_spool_dirs',`
 	gen_require(`
-		type var_spool_t;
+		type CUSTOMTYPE;
 	')
 
 	files_search_spool($1)
-	manage_dirs_pattern($1, var_spool_t, var_spool_t)
+	manage_dirs_pattern($1, CUSTOMTYPE, CUSTOMTYPE)
 ')
 
 """
@@ -131,26 +131,26 @@ if_stream_rules="""
 #
 interface(`TEMPLATETYPE_stream_connect',`
 	gen_require(`
-		type TEMPLATETYPE_t, var_spool_t;
+		type TEMPLATETYPE_t, CUSTOMTYPE;
 	')
 
-	stream_connect_pattern($1, var_spool_t, var_spool_t)
+	stream_connect_pattern($1, CUSTOMTYPE, CUSTOMTYPE)
 ')
 """
 
 if_admin_types="""
-		type var_spool_t;"""
+		type CUSTOMTYPE;"""
 
 if_admin_rules="""
 	files_search_spool($1)
-	admin_pattern($1, var_spool_t)
+	admin_pattern($1, CUSTOMTYPE)
 """
 
 ########################### File Context ##################################
 fc_file="""\
-FILENAME		--	gen_context(system_u:object_r:var_spool_t,s0)
+FILENAME		--	gen_context(system_u:object_r:CUSTOMTYPE,s0)
 """
 
 fc_dir="""\
-FILENAME(/.*)?		gen_context(system_u:object_r:var_spool_t,s0)
+FILENAME(/.*)?		gen_context(system_u:object_r:CUSTOMTYPE,s0)
 """

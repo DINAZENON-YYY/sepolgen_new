@@ -23,15 +23,15 @@
 
 ########################### Type Enforcement File #############################
 te_types="""
-type var_log_t;
-logging_log_file(var_log_t)
+type CUSTOMTYPE;
+logging_log_file(CUSTOMTYPE)
 """
 
 te_rules="""
-manage_dirs_pattern(TEMPLATETYPE_t, var_log_t, var_log_t)
-manage_files_pattern(TEMPLATETYPE_t, var_log_t, var_log_t)
-manage_lnk_files_pattern(TEMPLATETYPE_t, var_log_t, var_log_t)
-logging_log_filetrans(TEMPLATETYPE_t, var_log_t, { dir file lnk_file })
+manage_dirs_pattern(TEMPLATETYPE_t, CUSTOMTYPE, CUSTOMTYPE)
+manage_files_pattern(TEMPLATETYPE_t, CUSTOMTYPE, CUSTOMTYPE)
+manage_lnk_files_pattern(TEMPLATETYPE_t, CUSTOMTYPE, CUSTOMTYPE)
+logging_log_filetrans(TEMPLATETYPE_t, CUSTOMTYPE, { dir file lnk_file })
 """
 
 ########################### Interface File #############################
@@ -49,11 +49,11 @@ if_rules="""\
 #
 interface(`TEMPLATETYPE_read_log',`
 	gen_require(`
-		type var_log_t;
+		type CUSTOMTYPE;
 	')
 
 	logging_search_logs($1)
-	read_files_pattern($1, var_log_t, var_log_t)
+	read_files_pattern($1, CUSTOMTYPE, CUSTOMTYPE)
 ')
 
 ########################################
@@ -68,11 +68,11 @@ interface(`TEMPLATETYPE_read_log',`
 #
 interface(`TEMPLATETYPE_append_log',`
 	gen_require(`
-		type var_log_t;
+		type CUSTOMTYPE;
 	')
 
 	logging_search_logs($1)
-	append_files_pattern($1, var_log_t, var_log_t)
+	append_files_pattern($1, CUSTOMTYPE, CUSTOMTYPE)
 ')
 
 ########################################
@@ -87,29 +87,29 @@ interface(`TEMPLATETYPE_append_log',`
 #
 interface(`TEMPLATETYPE_manage_log',`
 	gen_require(`
-		type var_log_t;
+		type CUSTOMTYPE;
 	')
 
 	logging_search_logs($1)
-	manage_dirs_pattern($1, var_log_t, var_log_t)
-	manage_files_pattern($1, var_log_t, var_log_t)
-	manage_lnk_files_pattern($1, var_log_t, var_log_t)
+	manage_dirs_pattern($1, CUSTOMTYPE, CUSTOMTYPE)
+	manage_files_pattern($1, CUSTOMTYPE, CUSTOMTYPE)
+	manage_lnk_files_pattern($1, CUSTOMTYPE, CUSTOMTYPE)
 ')
 """
 
 if_admin_types="""
-		type var_log_t;"""
+		type CUSTOMTYPE;"""
 
 if_admin_rules="""
 	logging_search_logs($1)
-	admin_pattern($1, var_log_t)
+	admin_pattern($1, CUSTOMTYPE)
 """
 
 ########################### File Context ##################################
 fc_file="""\
-FILENAME		--	gen_context(system_u:object_r:var_log_t,s0)
+FILENAME		--	gen_context(system_u:object_r:CUSTOMTYPE,s0)
 """
 
 fc_dir="""\
-FILENAME(/.*)?		gen_context(system_u:object_r:var_log_t,s0)
+FILENAME(/.*)?		gen_context(system_u:object_r:CUSTOMTYPE,s0)
 """

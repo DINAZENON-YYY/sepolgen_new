@@ -23,19 +23,19 @@
 
 ########################### Type Enforcement File #############################
 te_types="""
-type var_lib_t;
-files_type(var_lib_t)
+type CUSTOMTYPE;
+files_type(CUSTOMTYPE)
 """
 te_rules="""
-manage_dirs_pattern(TEMPLATETYPE_t, var_lib_t, var_lib_t)
-manage_files_pattern(TEMPLATETYPE_t, var_lib_t, var_lib_t)
-manage_lnk_files_pattern(TEMPLATETYPE_t, var_lib_t, var_lib_t)
-files_var_lib_filetrans(TEMPLATETYPE_t, var_lib_t, { dir file lnk_file })
+manage_dirs_pattern(TEMPLATETYPE_t, CUSTOMTYPE, CUSTOMTYPE)
+manage_files_pattern(TEMPLATETYPE_t, CUSTOMTYPE, CUSTOMTYPE)
+manage_lnk_files_pattern(TEMPLATETYPE_t, CUSTOMTYPE, CUSTOMTYPE)
+files_var_lib_filetrans(TEMPLATETYPE_t, CUSTOMTYPE, { dir file lnk_file })
 """
 
 te_stream_rules="""\
-manage_sock_files_pattern(TEMPLATETYPE_t, var_lib_t, var_lib_t)
-files_var_lib_filetrans(TEMPLATETYPE_t, var_lib_t, sock_file)
+manage_sock_files_pattern(TEMPLATETYPE_t, CUSTOMTYPE, CUSTOMTYPE)
+files_var_lib_filetrans(TEMPLATETYPE_t, CUSTOMTYPE, sock_file)
 """
 
 
@@ -53,10 +53,10 @@ if_rules="""
 #
 interface(`TEMPLATETYPE_search_lib',`
 	gen_require(`
-		type var_lib_t;
+		type CUSTOMTYPE;
 	')
 
-	allow $1 var_lib_t:dir search_dir_perms;
+	allow $1 CUSTOMTYPE:dir search_dir_perms;
 	files_search_var_lib($1)
 ')
 
@@ -72,11 +72,11 @@ interface(`TEMPLATETYPE_search_lib',`
 #
 interface(`TEMPLATETYPE_read_lib_files',`
 	gen_require(`
-		type var_lib_t;
+		type CUSTOMTYPE;
 	')
 
 	files_search_var_lib($1)
-	read_files_pattern($1, var_lib_t, var_lib_t)
+	read_files_pattern($1, CUSTOMTYPE, CUSTOMTYPE)
 ')
 
 ########################################
@@ -91,11 +91,11 @@ interface(`TEMPLATETYPE_read_lib_files',`
 #
 interface(`TEMPLATETYPE_manage_lib_files',`
 	gen_require(`
-		type var_lib_t;
+		type CUSTOMTYPE;
 	')
 
 	files_search_var_lib($1)
-	manage_files_pattern($1, var_lib_t, var_lib_t)
+	manage_files_pattern($1, CUSTOMTYPE, CUSTOMTYPE)
 ')
 
 ########################################
@@ -110,11 +110,11 @@ interface(`TEMPLATETYPE_manage_lib_files',`
 #
 interface(`TEMPLATETYPE_manage_lib_dirs',`
 	gen_require(`
-		type var_lib_t;
+		type CUSTOMTYPE;
 	')
 
 	files_search_var_lib($1)
-	manage_dirs_pattern($1, var_lib_t, var_lib_t)
+	manage_dirs_pattern($1, CUSTOMTYPE, CUSTOMTYPE)
 ')
 
 """
@@ -132,30 +132,30 @@ if_stream_rules="""
 #
 interface(`TEMPLATETYPE_stream_connect',`
 	gen_require(`
-		type TEMPLATETYPE_t, var_lib_t;
+		type TEMPLATETYPE_t, CUSTOMTYPE;
 	')
 
-	stream_connect_pattern($1, var_lib_t, var_lib_t)
+	stream_connect_pattern($1, CUSTOMTYPE, CUSTOMTYPE)
 ')
 """
 
 if_admin_types="""
-		type var_lib_t;"""
+		type CUSTOMTYPE;"""
 
 if_admin_rules="""
 	files_search_var_lib($1)
-	admin_pattern($1, var_lib_t)
+	admin_pattern($1, CUSTOMTYPE)
 """
 
 ########################### File Context ##################################
 fc_file="""\
-FILENAME		--	gen_context(system_u:object_r:var_lib_t,s0)
+FILENAME		--	gen_context(system_u:object_r:CUSTOMTYPE,s0)
 """
 
 fc_sock_file="""\
-FILENAME		-s	gen_context(system_u:object_r:var_lib_t,s0)
+FILENAME		-s	gen_context(system_u:object_r:CUSTOMTYPE,s0)
 """
 
 fc_dir="""\
-FILENAME(/.*)?		gen_context(system_u:object_r:var_lib_t,s0)
+FILENAME(/.*)?		gen_context(system_u:object_r:CUSTOMTYPE,s0)
 """
